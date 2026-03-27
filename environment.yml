@@ -1,0 +1,12 @@
+name: wa-chatbot
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.13.11
+  - langgraph=1.0.7
+  - langchain-mistralai=1.1.1
+  - langchain-google-genai=4.2.1
+  - langchain=1.2.8
+  - python-dotenv=1.2.1
+  - langfuse-python=3.14.4
