@@ -1,0 +1,21 @@
+version: '0.1.0'
+
+index:
+  name: website_index
+  prefix: doc
+  storage_type: hash
+  key_separator: ":"
+
+fields:
+  - name: content
+    type: text
+
+  - name: embedding
+    type: vector
+    attrs:
+      dims: 1024
+      algorithm: hnsw
+      distance_metric: cosine
+      datatype: float32
+      m: 16
+      ef_construction: 200
