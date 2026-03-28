@@ -10,3 +10,5 @@ dependencies:
   - langchain=1.2.8
   - python-dotenv=1.2.1
   - langfuse-python=3.14.4
+  - redisvl=0.16.0
+  - beautifulsoup4=4.14.3
