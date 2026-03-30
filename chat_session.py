@@ -16,6 +16,7 @@ class ChatSession:
         config = {"configurable": {"thread_id": self.thread_id}}
         if self.langfuse_handler:
             config["callbacks"] = [self.langfuse_handler]
+            config["metadata"] = {"langfuse_tags": ["WA-Chatbot", "Free-Spirit"]}
         return config
 
     def send(self, user_input: str) -> str:
