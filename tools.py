@@ -28,7 +28,7 @@ def search_knowledge_base(query: str) -> str:
         query: The question or topic to research.
 
     Returns:
-        The most relevant passages found in the database.
+        The most relevant excerpts found in the database.
     """
     # 1. Embedding de la requête
     query_vector = _embedder.embed([query])[0]
@@ -41,15 +41,15 @@ def search_knowledge_base(query: str) -> str:
     relevant = [r for r in results if r["score"] >= MIN_SCORE]
 
     if not relevant:
-        return "Aucune information pertinente trouvée dans la base de connaissances."
+        return "No relevant information was found in the knowledge base."
 
     # 4. Construction du contexte pour le LLM
     chunks = "\n\n---\n\n".join(
-        f"[Passage {i+1} — score: {r['score']}]\n{r['content']}"
+        f"[Excerpt {i+1} — score: {r['score']}]\n{r['content']}"
         for i, r in enumerate(relevant)
     )
 
-    return f"Informations trouvées dans la base de connaissances :\n\n{chunks}"
+    return f"Information found in the knowledge base:\n\n{chunks}"
 
 
 def get_tools() -> list:
