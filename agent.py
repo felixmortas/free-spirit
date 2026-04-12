@@ -5,6 +5,7 @@ from langchain_mistralai import ChatMistralAI
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langgraph.checkpoint.memory import InMemorySaver
 
+from system_prompt import get_system_prompt
 from tools import get_tools
 from middleware.model_fallback import fallback
 
@@ -18,11 +19,13 @@ def create_email_agent(model_name: str, debug: bool):
     else:
         raise ValueError(f"Modèle non supporté : {model_name}. Utilisez un modèle 'gemini-*' ou 'mistral-*'.")
     
+    system_prompt_path = os.path.join("prompts", "system_prompt.md")
     checkpointer = InMemorySaver()
 
     return create_agent(
         model=model, 
         tools=get_tools(), 
+        system_prompt=get_system_prompt(system_prompt_path),
         checkpointer=checkpointer,
         # state_schema=State, 
         # context_schema=Context, 
