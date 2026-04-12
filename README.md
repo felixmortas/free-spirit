@@ -50,6 +50,70 @@ Once the agent is running, you can interact with it normally. Use these special 
 * `/reset`: Wipe the current thread memory and start a fresh session.
 * `/exit`: Close the application.
 
+## ☁️ AWS Lambda Deployment (WhatsApp)
+
+`lambda_handler.py` is the entry point for running the chatbot as a serverless WhatsApp bot via the **Meta Cloud API** and **AWS Lambda**.
+
+### How It Works
+
+Incoming WhatsApp messages hit your Lambda function URL (or API Gateway). The handler:
+
+1. **Verifies** the Meta webhook challenge on `GET` requests.
+2. **Parses** the WhatsApp Cloud API payload on `POST` requests.
+3. **Routes** each message through the ReAct agent using a per-sender `ChatSession`.
+4. **Replies** by calling the WhatsApp Graph API directly.
+
+The agent is initialised once at **cold start** and reused across warm invocations for efficiency. Sessions are stored in-memory, keyed by the sender's phone number — they persist as long as the Lambda container stays warm.
+
+### Required Environment Variables
+
+| Variable | Description |
+|---|---|
+| `WHATSAPP_VERIFY_TOKEN` | Secret token for Meta webhook verification |
+| `WHATSAPP_TOKEN` | Meta Cloud API bearer token |
+| `WHATSAPP_PHONE_NUMBER_ID` | Your WhatsApp Business phone number ID |
+| `MODEL_NAME` | LLM model to use (default: `mistral-small-latest`) |
+| `DEBUG` | Set to `"true"` to enable debug logging (default: `false`) |
+| `WHATSAPP_API_VERSION` | Meta Graph API version (default: `v19.0`) |
+
+> All variables from your `.env` file (Langfuse keys, LLM provider keys, etc.) must also be set as Lambda environment variables.
+
+### Deployment Steps
+
+**1. Package your code**
+```bash
+pip install -r requirements.txt -t package/
+cp *.py package/
+cd package && zip -r ../deployment.zip . && cd ..
+```
+
+**2. Create the Lambda function**
+```bash
+aws lambda create-function \
+  --function-name whatsapp-react-agent \
+  --runtime python3.11 \
+  --handler lambda_handler.lambda_handler \
+  --zip-file fileb://deployment.zip \
+  --role arn:aws:iam::<YOUR_ACCOUNT_ID>:role/<YOUR_LAMBDA_ROLE>
+```
+
+**3. Set environment variables**
+```bash
+aws lambda update-function-configuration \
+  --function-name whatsapp-react-agent \
+  --environment "Variables={WHATSAPP_TOKEN=...,WHATSAPP_PHONE_NUMBER_ID=...,WHATSAPP_VERIFY_TOKEN=...,MODEL_NAME=mistral-small-latest}"
+```
+
+**4. Expose a public URL**
+
+Enable a Lambda Function URL (or attach an API Gateway) and set it as your **Webhook URL** in the Meta Developer Console.
+
+### ⚠️ Notes
+
+- **Timeout**: Set your Lambda timeout to at least **30 seconds** — LLM calls can be slow. WhatsApp expects a `200 OK` within ~20 seconds; for slow agents, consider decoupling with SQS (acknowledge immediately, process asynchronously).
+- **Session persistence**: In-memory sessions reset on cold starts. For persistent conversation history across invocations, replace `_sessions` with a DynamoDB-backed store.
+- **Retries**: WhatsApp will retry delivery if it doesn't receive a `200` — make your handler idempotent if needed (e.g., deduplicate by `message_id`).
+
 ## 🧰 Agent Tools
 
 The agent uses a **ReAct loop** to decide when and which tools to invoke based on the user's query. Tools are defined in `tools.py` and automatically made available to the agent at startup.
