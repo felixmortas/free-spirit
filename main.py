@@ -26,7 +26,7 @@ def print_agent(text: str):
     print(f"\n\033[92mAgent ▶\033[0m {text}\n")
  
 def print_error(text: str):
-    print(f"\n\033[91m[Erreur]\033[0m {text}\n")
+    print(f"\n\033[91m[Error]\033[0m {text}\n")
  
 def print_info(text: str):
     print(f"\n\033[94m[Info]\033[0m {text}\n")
