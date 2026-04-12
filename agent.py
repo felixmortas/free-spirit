@@ -17,7 +17,7 @@ def create_email_agent(model_name: str, debug: bool):
         model = ChatMistralAI(model=model_name, api_key=os.getenv('MISTRAL_API_KEY'))
 
     else:
-        raise ValueError(f"Modèle non supporté : {model_name}. Utilisez un modèle 'gemini-*' ou 'mistral-*'.")
+        raise ValueError(f"Model not supported : {model_name}. Use a model 'gemini-*' or 'mistral-*'.")
     
     system_prompt_path = os.path.join("prompts", "system_prompt.md")
     checkpointer = InMemorySaver()

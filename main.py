@@ -16,9 +16,9 @@ from chat_session import ChatSession
 BANNER = """
 ╔══════════════════════════════════════╗
 ║         ReAct Agent — Terminal       ║
-║  /reset  effacer l'historique        ║
-║  /history  voir la conversation      ║
-║  /exit   quitter                     ║
+║  /reset  clear history               ║
+║  /history  view the conversation     ║
+║  /exit   leave.                      ║
 ╚══════════════════════════════════════╝
 """
  
@@ -35,28 +35,28 @@ def print_info(text: str):
  
 def handle_command(cmd: str, session: ChatSession) -> bool:
     """
-    Traite les commandes spéciales.
-    Retourne True si c'était une commande (pour skipper l'envoi à l'agent).
+    Processes special orders.
+    Returns True if it was an order (to skip sending it to the agent).
     """
     cmd = cmd.strip().lower()
  
     if cmd == "/exit":
-        print_info("À bientôt !")
+        print_info("See you soon!")
         raise SystemExit(0)
  
     if cmd == "/reset":
         session.reset()
-        print_info("Historique effacé. Nouvelle conversation démarrée.")
+        print_info("Chat history cleared. New conversation started.")
         return True
  
     if cmd == "/history":
         history = session.get_history()
         if not history:
-            print_info("Aucun message pour l'instant.")
+            print_info("No messages yet.")
         else:
             print()
             for entry in history:
-                color = "\033[96m" if entry["role"] == "Vous" else "\033[92m"
+                color = "\033[96m" if entry["role"] == "You" else "\033[92m"
                 print(f"  {color}{entry['role']}\033[0m : {entry['content']}")
             print()
         return True
@@ -67,14 +67,14 @@ def handle_command(cmd: str, session: ChatSession) -> bool:
 # ==================== REPL LOOP ====================
  
 def run_chat(session: ChatSession):
-    """Boucle principale de lecture / réponse."""
+    """Main read/response loop."""
     print(BANNER)
  
     while True:
         try:
-            user_input = input("\033[96mVous ▶\033[0m ").strip()
+            user_input = input("\033[96mYou ▶\033[0m ").strip()
         except (EOFError, KeyboardInterrupt):
-            print_info("\nInterruption détectée. À bientôt !")
+            print_info("\nInterruption detected. See you soon!")
             break
  
         if not user_input:
@@ -90,7 +90,7 @@ def run_chat(session: ChatSession):
             response = session.send(user_input)
             print_agent(response)
         except Exception as e:
-            print_error(f"L'agent a rencontré un problème : {e}")
+            print_error(f"The agent encountered a problem: {e}")
  
 
 

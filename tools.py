@@ -1,21 +1,18 @@
-# tools.py
-from typing import Annotated
 import os
 
 from langchain.tools import tool
-from langchain_core.tools import InjectedToolCallId
 
 from ingestion.vectordb import RedisVectorDB
-from ingestion.embedder import MistralEmbedder  # ton fichier embedder
+from ingestion.embedder import MistralEmbedder
 
-# ==================== INITIALISATION ====================
+# ==================== INITIALIZATION ====================
 
 _embedder = MistralEmbedder(api_key=os.environ["MISTRAL_API_KEY"])
 _vectordb = RedisVectorDB()
 
-TOP_K = 3  # nombre de chunks récupérés
+TOP_K = 3  # number of chunks retrieved
 
-# ==================== OUTIL RAG ====================
+# ==================== RAG TOOL =====================
 
 @tool
 def search_knowledge_base(query: str) -> str:

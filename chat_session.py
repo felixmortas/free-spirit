@@ -3,16 +3,16 @@ from langchain.messages import HumanMessage, AIMessage
 
 
 class ChatSession:
-    """Gère l'historique de conversation en mémoire via le checkpointer de l'agent."""
+    """Manages the conversation history in memory via the agent's checkpointer."""
 
     def __init__(self, agent, langfuse_handler=None):
         self.agent = agent
         self.langfuse_handler = langfuse_handler
-        # On génère un ID de thread unique au démarrage
+        # A unique thread ID is generated at startup
         self.thread_id = str(uuid.uuid4())
 
     def _get_config(self) -> dict:
-        """Retourne la configuration nécessaire pour l'agent."""
+        """Returns the configuration required for the agent."""
         config = {"configurable": {"thread_id": self.thread_id}}
         if self.langfuse_handler:
             config["callbacks"] = [self.langfuse_handler]
@@ -20,11 +20,11 @@ class ChatSession:
         return config
 
     def send(self, user_input: str) -> str:
-        """Envoie uniquement le nouveau message à l'agent."""
+        """Send only the new message to the agent."""
         user_msg = HumanMessage(content=user_input)
 
-        # On envoie UNIQUEMENT le dernier message. 
-        # LangGraph s'occupe de l'historique grâce au thread_id.
+        # Only the latest message is sent. 
+        # LangGraph handles the history using the thread_id.
         result = self.agent.invoke(
             {"messages": [user_msg]},
             config=self._get_config(),
@@ -33,18 +33,18 @@ class ChatSession:
         return self._extract_ai_message(result)
 
     def reset(self):
-        """Efface l'historique en générant un nouveau thread_id."""
-        # En changeant l'ID, LangGraph traite la suite comme une nouvelle conversation
+        """Clears the history by generating a new thread_id."""
+        # By changing the ID, LangGraph treats the rest of the conversation as a new one
         self.thread_id = str(uuid.uuid4())
 
     def get_history(self) -> list[dict]:
-        """Récupère l'historique directement depuis l'état interne de l'agent."""
+        """Retrieves the history directly from the agent's internal state."""
         output = []
         
-        # On extrait l'état actuel lié à notre thread_id
+        # We retrieve the current status associated with our thread_id
         state = self.agent.get_state(self._get_config())
         
-        # 'messages' contient la liste complète synchronisée par LangGraph
+        # 'messages' contains the complete list synchronized by LangGraph
         messages = state.values.get("messages", [])
 
         for msg in messages:

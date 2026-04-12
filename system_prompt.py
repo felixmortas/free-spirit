@@ -1,18 +1,18 @@
 def get_system_prompt(file_path="system_prompt.md"):
     """
-    Charge le contenu d'un fichier Markdown et le retourne sous forme de chaîne de caractères.
+    Loads the contents of a Markdown file and returns them as a string.
 
     Args:
-        file_path (str): Chemin vers le fichier Markdown à lire. Par défaut, "system_prompt.md".
+        file_path (str): Path to the Markdown file to read. By default, “system_prompt.md”.
 
     Returns:
-        str: Le contenu du fichier Markdown.
+        str: The content of the Markdown file.
     """
     try:
         with open(file_path, "r", encoding="utf-8") as file:
             content = file.read()
         return content
     except FileNotFoundError:
-        raise FileNotFoundError(f"Le fichier {file_path} n'a pas été trouvé.")
+        raise FileNotFoundError(f"The file {file_path} was not found.")
     except Exception as e:
-        raise Exception(f"Une erreur est survenue lors de la lecture du fichier : {e}")
+        raise Exception(f"An error occurred while reading the file: {e}")
