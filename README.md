@@ -52,7 +52,7 @@ Edit `.env`:
 LANGFUSE_PUBLIC_KEY=pk-lf-...
 LANGFUSE_SECRET_KEY=sk-lf-...
 LANGFUSE_HOST="https://cloud.langfuse.com"
-ANYSCALE_API_KEY=your_key_here
+MISTRAL_API_KEY=your_key_here
 # Add other provider keys as needed
 ```
 
