@@ -1,3 +1,21 @@
+# Executive summary
+
+### 🟢 WhatsApp AI Assistant & RAG Pipeline for Free Spirit Hostel Ecuador
+
+This project features a sophisticated **ReAct (Reasoning and Acting)** agent deployed as a serverless WhatsApp chatbot for the Free Spirit Hostel. It uses a custom Retrieval-Augmented Generation (RAG) system to provide accurate and specific responses.
+
+**The Concept:** A conversational AI that doesn't just predict text, but actively uses tools—such as searching a vector database—to solve user queries, all managed through a **cost-free**, event-driven architecture.
+
+**Technical Highlights:**
+
+- **Advanced Agentic Workflow:** Built using **LangChain** to implement a ReAct loop. The agent maintains short-term memory (conversations history) through stateful checkpointers.
+- **Serverless WhatsApp Integration:** Deployed for free on **AWS Lambda** using the WhatsApp Developer API. The architecture is optimized for cold starts, initializing the LLM engine once and reusing sessions for warm invocations to ensure low-latency interactions.
+- **End-to-End RAG Ingestion:** A custom ETL pipeline that crawls, cleans, and deduplicates web content. Text is processed using **Mistral Embeddings** and stored in a **Redis Vector Database** for high-performance free of charge semantic search.
+- **Observability & Governance:** Fully integrated with **Langfuse** for detailed tracing of the agent's "thought process," monitoring latency, tracking token costs, and debugging tool execution.
+- **Resilient Engineering:** Features middleware support for model fallbacks and secure environment management, ensuring the bot remains operational even if primary AI providers experience downtime.
+
+**Results:** A 100% free production-ready AI agent capable of navigating complex information (services, rates, policies) and delivering them naturally via WhatsApp, backed by full observability and a robust data ingestion engine.
+
 # 🤖 ReAct Agent Chatbot
 
 A robust, terminal-based conversational agent built with **LangChain** and **LangGraph**. This project implements a ReAct (Reasoning and Acting) loop, allowing the agent to use custom tools, maintain conversation memory via a persistent checkpointer, and track all operations through **Langfuse**.
